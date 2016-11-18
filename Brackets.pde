@@ -7,8 +7,12 @@ float i;
 float winner;
 float a;
 float winner2;
-String[] participants = {"Charumathi", "Ariane", "Tyler", "Jaume", "Theresa", "Henry", "Alex"};
+StringList participants = getPlayers();
 PImage img;
+StringList playersSemiFinals = new StringList();
+StringList playersFinals = new StringList();
+int counter = 0;
+
 
 
 public void setup() {
@@ -20,10 +24,6 @@ public void setup() {
 }
 
 public void draw() {
-  i = random(5);
-  winner = random(5);
-  a = random(5);
-  winner2 = random(5);
 }
 
 public void handleButtonEvents(GButton selectWinner, GEvent event) {
@@ -53,12 +53,28 @@ public void drawBrackets() {
 }
 
 public void drawNames() {
-  fill(#FC0808);
+  fill(#FF1C03);
   textSize(20);
-  text("Charumathi", 70, 45);
-  text("Jaume", 770, 45);
-  text("Tyler", 70, 640);
-  text("Henry", 770, 640);
+  textAlign(LEFT);
+  // Left Players
+  text(getName(), 65, 45);
+  text(getName(), 65, 640);
+  textAlign(RIGHT);
+  // Right Players
+  text(getName(), 775, 45);
+  text(getName(), 775, 640);
+}
+
+// This method gets randomly unique players from the string list of players.
+public String getName() { 
+  String name = participants.get(int(random(participants.size())));
+  playersSemiFinals.append(name); // Add the randomly selected players to the playersSemiFinals map
+  for ( int i = 0; i < participants.size(); i++) { 
+    if ( participants.get(i).equals(name)) { 
+      participants.remove(i);
+    }
+  }
+  return name;
 }
 
 public void selectWinner() {
@@ -66,52 +82,39 @@ public void selectWinner() {
   int winner = int(random(5));
   int winner2 = int(random(5));
 
+  int winnerPosition; // Use this to track who will win
+
+  // Determine left side winner
   if (winner % 4 == 1) {
-    text("Tyler", 230, 350);
-    round1 = true;
+    winnerPosition = 0; // Left side first player is the winner
   } else {
-    text("Charumathi", 210, 350);
+    winnerPosition = 1; // Left side second player is the winner
   }
+  text(playersSemiFinals.get(winnerPosition), 220, 345);
+  playersFinals.append(playersSemiFinals.get(winnerPosition)); // add the left side winner to the final player map
+
+  // Determine right side winner
   if (winner2 % 4 == 1) {
-    text("Henry", 570, 350);
-    round2 = true;
+    winnerPosition = 3 ; // Right side second player is the winner
   } else {
-    text("Jaume", 570, 350);
+    winnerPosition = 2 ; // Right side first player is the winner
   }
+  text(playersSemiFinals.get(winnerPosition), 520, 345);
+  playersFinals.append(playersSemiFinals.get(winnerPosition)); // add the right side winner to the final player map
+
   clickedOnce = true;
 }
 
 public void lastRound() {
   fill(#FC0808);
   int finalWinner = int(random(5));
+  int winnerPosition; // Use this to track who will win
   if (finalWinner % 4 == 1) {
-    if (round1 && round2) {
-      text("Henry", 390, 250);
-    } 
-    if (round1 && !round2) {
-      text("Tyler", 390, 250);
-    }
-    if (round2 && !round1) {
-      text("Henry", 390, 250);
-    }
-    if (!round1 && !round2) {
-      text("Jaume", 390, 250);
-    }
-  }
-  if (finalWinner % 4 !=1) {
-    if (round1 && round2) {
-      text("Tyler", 390, 250);
-    } 
-    if (round1 && !round2) {
-      text("Jaume", 390, 250);
-    }
-    if (round2 && !round1) {
-      text("Charumathi", 380, 250);
-    }
-    if (!round1 && !round2) {
-      text("Charumathi", 380, 250);
-    }
-  }
+    winnerPosition = 0; // Left side player wins
+  } else { 
+    winnerPosition = 1; // Right side player wins
+  } 
+  text(playersFinals.get(winnerPosition), 400, 250);
 }
 
 public void resetBooleans() {
@@ -123,8 +126,16 @@ public void resetBooleans() {
 public void keyPressed() {
   if (key == ENTER) {
     background(255);
+    playersSemiFinals = new StringList();
+    playersFinals = new StringList();
+    counter = 0;
     resetBooleans();
     drawBrackets();
+    participants = getPlayers();
     drawNames();
   }
+}
+
+public StringList getPlayers() { 
+  return new StringList("Charumathi", "Ariane", "Tyler", "Jaume", "Theresa", "Henry", "Alex");
 }
