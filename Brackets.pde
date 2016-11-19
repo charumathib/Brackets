@@ -11,6 +11,7 @@ StringList participants = getPlayers();
 PImage img;
 StringList playersSemiFinals = new StringList();
 StringList playersFinals = new StringList();
+StringList finalWinner = new StringList();
 int counter = 0;
 
 
@@ -27,19 +28,39 @@ public void draw() {
 }
 
 public void handleButtonEvents(GButton selectWinner, GEvent event) {
-  if (!clickedOnce) {
-    selectWinner();
-  } else {
-    lastRound();
+  switch(counter) {  
+  case 0 : // Button Clicked 1 time
+    playersFinals = selectWinner(playersSemiFinals);
+    counter++;
+    printWinners(counter, playersFinals);
+    break ;
+  case 1 : // Button clicked 2 times   
+    finalWinner = selectWinner(playersFinals);
+    counter++;
+    printWinners(counter, finalWinner);
+    break;
+  default: // Button clicked more times
+    break;
   }
 }
 
+public void printWinners(int buttonClicked, StringList winners) {
+  if ( buttonClicked == 1) { 
+    text(winners.get(0), 220, 345);
+    text(winners.get(1), 440, 345);
+  } else if ( buttonClicked == 2) { 
+    text(winners.get(0), 400, 250);
+  }
+}
+
+//text(playersFinals.get(winnerPosition), 400, 250);
+//    text(playersFinals.get(k), 220 * (k+1), 345);
 
 
 public void drawBrackets() {
   tint(255, 127);
-  img = loadImage("chess.jpg");
-  image(img, 0, 0, width, height);
+  //img = loadImage("chess.jpg");
+  //image(img, 0, 0, width, height);
   fill(0);
   rect(50, 50, 150, 5);
   rect(200, 50, 5, 600);
@@ -77,45 +98,40 @@ public String getName() {
   return name;
 }
 
-public void selectWinner() {
-  fill(#FC0808);
+public String whoIsTheWinner(String player1, int rank1, String player2, int rank2) { 
+  // Based on the lesser rank number, determine which player gets to be high priority
+  String highRankingPlayer = ( rank1 < rank2) ? player1 : player2 ; 
+
+  // If a player is high priority, then the other player is low priority
+  String lowRankingPlayer = (highRankingPlayer.equals(player2)) ? player1 : player2 ;
+
   int winner = int(random(5));
-  int winner2 = int(random(5));
 
-  int winnerPosition; // Use this to track who will win
-
-  // Determine left side winner
   if (winner % 4 == 1) {
-    winnerPosition = 0; // Left side first player is the winner
+    return lowRankingPlayer;    // Low priority
   } else {
-    winnerPosition = 1; // Left side second player is the winner
+    return highRankingPlayer;    // High Priority
   }
-  text(playersSemiFinals.get(winnerPosition), 220, 345);
-  playersFinals.append(playersSemiFinals.get(winnerPosition)); // add the left side winner to the final player map
-
-  // Determine right side winner
-  if (winner2 % 4 == 1) {
-    winnerPosition = 3 ; // Right side second player is the winner
-  } else {
-    winnerPosition = 2 ; // Right side first player is the winner
-  }
-  text(playersSemiFinals.get(winnerPosition), 520, 345);
-  playersFinals.append(playersSemiFinals.get(winnerPosition)); // add the right side winner to the final player map
-
-  clickedOnce = true;
 }
 
-public void lastRound() {
+public StringList selectWinner(StringList players) {
   fill(#FC0808);
-  int finalWinner = int(random(5));
-  int winnerPosition; // Use this to track who will win
-  if (finalWinner % 4 == 1) {
-    winnerPosition = 0; // Left side player wins
-  } else { 
-    winnerPosition = 1; // Right side player wins
-  } 
-  text(playersFinals.get(winnerPosition), 400, 250);
+  String player1, player2, winnerPlayer;
+  int player1Rank, player2Rank;
+  StringList winners = new StringList();
+
+  for ( int i = 0; i < players.size(); i += 2) { 
+    player1 = players.get(i);
+    player2 = players.get(i+1);
+    player1Rank = 1 ; // Some value for now
+    player2Rank = 2 ; // Some value for now
+    winnerPlayer = whoIsTheWinner(player1, player1Rank, player2, player2Rank);
+    winners.append(winnerPlayer);
+  }
+  return winners;
 }
+
+
 
 public void resetBooleans() {
   round1 = false;
@@ -128,6 +144,7 @@ public void keyPressed() {
     background(255);
     playersSemiFinals = new StringList();
     playersFinals = new StringList();
+    finalWinner = new StringList();
     counter = 0;
     resetBooleans();
     drawBrackets();
