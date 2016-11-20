@@ -55,7 +55,7 @@ public void drawBrackets() {
   tint(255, 127);
   //img = loadImage("chess.jpg");
   //image(img, 0, 0, width, height);
-  drawBrackets(4);
+  drawBrackets(32);
 }
 
 public void drawNames() {
