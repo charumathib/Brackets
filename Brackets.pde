@@ -12,7 +12,7 @@ public void setup() {
   background(255);
   selectWinner = new GButton(this, 350, 150, 200, 50, "Select Winner");
   loadPlayers();
-  drawBrackets();
+  drawBracketsImproved(8);
   drawNames();
   counter = 0;
   noStroke();
@@ -24,12 +24,15 @@ public void draw() {
 public void handleButtonEvents(GButton selectWinner, GEvent event) {
   switch(counter) {  
   case 0 : // Button Clicked 1st time. Do the same thing as Case = 1
-  case 1 : // Button clicked 2 times   
-    players = selectWinner(players);
+  case 1 : // Button clicked 2 times 
+  case 2 :
+  case 3 :
+    players = selectWinner(players); //<>//
     counter++;
     printWinners(counter, players);    
     break;
   default: // Button clicked more times
+    reset();
     break;
   }
 }
@@ -37,41 +40,54 @@ public void handleButtonEvents(GButton selectWinner, GEvent event) {
 
 public void printWinners(int buttonClicked, StringList winners) {
   fill(#FC0808);
+  textSize(12);
 
   if ( buttonClicked == 1) { 
-    text(winners.get(0), 220, 345);
-    text(winners.get(1), 550, 345);
+    text(winners.get(0), 97, 73);
+    text(winners.get(1), 97, 247);
+    text(winners.get(2), 97, 422);
+    text(winners.get(3), 97, 597);
+    text(winners.get(4), 725, 73);
+    text(winners.get(5), 725, 247);
+    text(winners.get(6), 725, 422);
+    text(winners.get(7), 725, 597);
   } else if ( buttonClicked == 2) { 
-    text(winners.get(0), 400, 230);
+    text(winners.get(0), 180, 160);
+    text(winners.get(1), 180, 508);
+    text(winners.get(2), 635, 160);
+    text(winners.get(3), 635, 508);
+  } else if (buttonClicked == 3) {
+    text(winners.get(0), 272, 335);
+    text(winners.get(1), 547, 335);
+  } else if (buttonClicked == 4) {
+    textSize(15);
+    fill(#1C0AF2);
+    text(winners.get(0).toUpperCase(), 395, 345);
   }
 }
 
 
-public void drawBrackets() {
-  tint(219, 40);
-  img = loadImage("chess.jpg");
-  image(img, 0, 0, width, height);
-  fill(0);
-  rect(50, 50, 150, 5);
-  rect(200, 50, 5, 600);
-  rect(50, 645, 150, 5);
-  rect(700, 50, 150, 5);
-  rect(700, 50, 5, 600);
-  rect(700, 645, 150, 5);
-  rect(200, 350, 150, 5);
-  rect(550, 350, 150, 5);
-  rect(350, 250, 200, 5);
-}
-
 public void drawNames() {
   fill(#FC0808);
-  textSize(26);
+  textSize(12);
   // Left Players
-  text(getName(), 65, 45);
-  text(getName(), 65, 640);
+  text(getName(), 10, 30);
+  text(getName(), 10, 115);
+  text(getName(), 10, 203);
+  text(getName(), 10, 290);
+  text(getName(), 10, 377);
+  text(getName(), 10, 463);
+  text(getName(), 10, 550);
+  text(getName(), 10, 639);
   // Right Players
-  text(getName(), 710, 45);
-  text(getName(), 710, 640);
+  text(getName(), 810, 30);
+  text(getName(), 810, 115);
+  text(getName(), 810, 203);
+  text(getName(), 810, 290);
+  text(getName(), 810, 377);
+  text(getName(), 810, 463);
+  text(getName(), 810, 550);
+  text(getName(), 810, 639);
 }
 
 // This method gets randomly unique players from the string list of players.
@@ -118,14 +134,12 @@ public StringList selectWinner(StringList players) {
   return winners;
 }
 
-public void keyPressed() {
-  if (key == ENTER) {
-    background(255);
-    counter = 0;
-    drawBrackets();
-    loadPlayers();
-    drawNames();
-  }
+public void reset() {
+  background(255);
+  counter = 0;
+  drawBracketsImproved(8);
+  loadPlayers();
+  drawNames();
 }
 
 public void loadPlayers() { 
